@@ -28,18 +28,71 @@ class Solution:
         longest_streak = 0
 
         for num in nums:
-            # Check if `num` is the start of a sequence (i.e., `num - 1` is not present).
-            # This prevents re-checking sequences from their middle elements.
             if (num - 1) not in num_set:
                 current_num = num
                 current_streak = 1
 
-                # Extend the sequence as long as consecutive numbers are found in the set.
                 while (current_num + 1) in num_set:
                     current_num += 1
                     current_streak += 1
                 
-                # Update the maximum streak found so far.
                 longest_streak = max(longest_streak, current_streak)
         
         return longest_streak
+
+# Test cases
+if __name__ == "__main__":
+    sol = Solution()
+
+    print("--- Running Basic Tests ---")
+
+    # Test Case 1: Basic example
+    nums1 = [100, 4, 200, 1, 3, 2]
+    expected1 = 4 # Sequence: 1, 2, 3, 4
+    result1 = sol.longestConsecutive(nums1)
+    print(f"Input: {nums1}, Expected: {expected1}, Got: {result1}")
+    assert result1 == expected1, f"Test Case 1 Failed: Expected {expected1}, Got {result1}"
+
+    # Test Case 2: Empty array
+    nums2 = []
+    expected2 = 0
+    result2 = sol.longestConsecutive(nums2)
+    print(f"Input: {nums2}, Expected: {expected2}, Got: {result2}")
+    assert result2 == expected2, f"Test Case 2 Failed: Expected {expected2}, Got {result2}"
+
+    # Test Case 3: Single element
+    nums3 = [1]
+    expected3 = 1
+    result3 = sol.longestConsecutive(nums3)
+    print(f"Input: {nums3}, Expected: {expected3}, Got: {result3}")
+    assert result3 == expected3, f"Test Case 3 Failed: Expected {expected3}, Got {result3}"
+
+    # Test Case 4: Already sorted array
+    nums4 = [1, 2, 3, 4, 5]
+    expected4 = 5
+    result4 = sol.longestConsecutive(nums4)
+    print(f"Input: {nums4}, Expected: {expected4}, Got: {result4}")
+    assert result4 == expected4, f"Test Case 4 Failed: Expected {expected4}, Got {result4}"
+
+    # Test Case 5: Reverse sorted array
+    nums5 = [5, 4, 3, 2, 1]
+    expected5 = 5
+    result5 = sol.longestConsecutive(nums5)
+    print(f"Input: {nums5}, Expected: {expected5}, Got: {result5}")
+    assert result5 == expected5, f"Test Case 5 Failed: Expected {expected5}, Got {result5}"
+    
+    # Test Case 6: Disjoint sequences
+    nums6 = [1, 2, 10, 11, 12, 13]
+    expected6 = 4 # Sequence: 10, 11, 12, 13
+    result6 = sol.longestConsecutive(nums6)
+    print(f"Input: {nums6}, Expected: {expected6}, Got: {result6}")
+    assert result6 == expected6, f"Test Case 6 Failed: Expected {expected6}, Got {result6}"
+
+    # Test Case 7: Duplicates - should not affect length
+    nums7 = [1, 2, 0, 1, 3]
+    expected7 = 4 # Sequence: 0, 1, 2, 3
+    result7 = sol.longestConsecutive(nums7)
+    print(f"Input: {nums7}, Expected: {expected7}, Got: {result7}")
+    assert result7 == expected7, f"Test Case 7 Failed: Expected {expected7}, Got {result7}"
+
+    print("\nAll basic test cases passed!")
