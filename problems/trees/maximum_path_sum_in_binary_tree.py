@@ -1,4 +1,5 @@
 import collections
+import unittest
 
 class Solution:
     """
@@ -41,20 +42,11 @@ class Solution:
         if not s:
             return ""
 
-        # Dictionary to store the frequency of characters in t
         target_counts = collections.Counter(t)
-
-        # Number of unique characters in t that must be present in the window
-        # with at least their required frequency.
         required_chars = len(target_counts)
-
-        # Current number of unique characters in window that meet the requirement
         formed_chars = 0
-
-        # Dictionary to store the frequency of characters in the current window
         window_counts = collections.defaultdict(int)
 
-        # Pointers for the sliding window
         left = 0
         min_len = float('inf')
         min_window_start = 0
@@ -63,14 +55,10 @@ class Solution:
             char_r = s[right]
             window_counts[char_r] += 1
 
-            # If the character from s[right] is in t and its count in the window
-            # matches its required count in t, increment formed_chars.
             if char_r in target_counts and window_counts[char_r] == target_counts[char_r]:
                 formed_chars += 1
 
-            # Try to shrink the window from the left if all required characters are found
             while formed_chars == required_chars and left <= right:
-                # Update minimum window if current window is smaller
                 current_window_len = right - left + 1
                 if current_window_len < min_len:
                     min_len = current_window_len
@@ -79,8 +67,6 @@ class Solution:
                 char_l = s[left]
                 window_counts[char_l] -= 1
 
-                # If the character removed from the left was a required character
-                # and its count now falls below the target count, decrement formed_chars.
                 if char_l in target_counts and window_counts[char_l] < target_counts[char_l]:
                     formed_chars -= 1
 
@@ -90,3 +76,32 @@ class Solution:
             return ""
         else:
             return s[min_window_start : min_window_start + min_len]
+
+class TestMinWindow(unittest.TestCase):
+    def setUp(self):
+        self.sol = Solution()
+
+    def test_example_1(self):
+        s = "ADOBECODEBANC"
+        t = "ABC"
+        self.assertEqual(self.sol.minWindow(s, t), "BANC")
+
+    def test_example_2(self):
+        s = "a"
+        t = "a"
+        self.assertEqual(self.sol.minWindow(s, t), "a")
+
+    def test_example_3(self):
+        s = "a"
+        t = "aa"
+        self.assertEqual(self.sol.minWindow(s, t), "") # s does not contain two 'a's
+
+    def test_example_4(self):
+        s = "ADOBECODEBANC"
+        t = "AABC"
+        self.assertEqual(self.sol.minWindow(s, t), "ADOBECODEBA") # Needs two 'A's
+
+    def test_example_5(self):
+        s = "ab"
+        t = "b"
+        self.assertEqual(self.sol.minWindow(s, t), "b")
