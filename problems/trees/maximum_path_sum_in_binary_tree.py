@@ -14,6 +14,27 @@ class Solution:
         """
         Finds the minimum window substring of s that contains all characters of t
         using a brute-force approach.
+
+        Complexity Analysis:
+        Let |s| be the length of string s (m) and |t| be the length of string t (n).
+
+        Time Complexity:
+        - The outer loop iterates from `i = 0` to `m-1`.
+        - The inner loop iterates from `j = i` to `m-1`. This results in `O(m^2)` possible substrings.
+        - Inside the inner loop:
+            - Slicing `s[i : j + 1]` takes `O(m)` time in the worst case.
+            - `collections.Counter(current_substring)` takes `O(m)` time to build the frequency map for the current substring.
+            - `contains_all_chars` iterates over `target_counts`, which has at most `k` unique characters (where `k` is at most 52 for English alphabet or 128 for ASCII). This takes `O(k)` time.
+        - Therefore, the total time complexity is approximately `O(m^2 * (m + k))` which simplifies to `O(m^3)` in the worst case if we consider `k` as a constant, or more precisely `O(m^2 * m + m^2 * k)`.
+          This approach is too slow for typical constraints (e.g., m up to 10^5).
+
+        Space Complexity:
+        - `target_counts`: `O(k)` where `k` is the number of unique characters in `t`.
+        - `current_window_counts`: `O(k)` for each substring.
+        - The space required for the substring `current_substring` is `O(m)`.
+        - Overall, the space complexity is `O(m + k)`.
+
+        This brute-force approach is highly inefficient for large inputs.
         """
         if not t:
             return ""
