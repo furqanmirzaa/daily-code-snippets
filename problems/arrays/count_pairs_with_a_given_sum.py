@@ -1,4 +1,5 @@
 from typing import List
+from collections import defaultdict
 
 class Solution:
     def groupAnagrams(self, strs: List[str]) -> List[List[str]]:
@@ -9,43 +10,39 @@ class Solution:
         # You can return the answer in any order. An Anagram is a word or phrase formed by rearranging
         # the letters of a different word or phrase, typically using all the original letters exactly once.
 
-        # --- Brute-Force Solution with Complexity Analysis ---
-        # The idea is to iterate through each string and, for each unvisited string,
-        # compare it with all subsequent unvisited strings to find its anagrams.
-        # Anagrams can be identified by sorting the characters of both strings and comparing the sorted results.
+        # --- Optimized Solution: Using a Hash Map (Dictionary) ---
+        # The core idea is that anagrams have the same canonical representation.
+        # A simple canonical representation for a string is its sorted form.
+        # We can use this sorted representation as a key in a hash map (dictionary).
+        # The values associated with each key will be a list of original strings that
+        # share that same sorted form, meaning they are anagrams of each other.
 
-        n = len(strs)
-        result = []
-        visited = [False] * n # Keep track of strings that have already been grouped
+        # defaultdict(list) automatically creates an empty list for a key if it doesn't exist yet.
+        anagram_map = defaultdict(list)
 
+        for s in strs:
+            # Sort the string to get its canonical representation (e.g., "eat", "tea", "ate" all become "aet")
+            # Using ''.join(sorted(s)) to convert the sorted list of characters back into a string key.
+            sorted_s_key = "".join(sorted(s))
+            
+            # Append the original string 's' to the list associated with its sorted key
+            anagram_map[sorted_s_key].append(s)
+
+        # The values of the hash map are the desired groups of anagrams.
+        # Convert the dictionary values (lists of anagrams) into a list of lists.
+        return list(anagram_map.values())
+
+        # --- Complexity Analysis for Optimized Solution ---
         # Time Complexity:
-        # Outer loop runs N times (where N is the number of strings).
-        # Inner loop runs up to N times.
-        # Inside the inner loop, `sorted(s)` takes O(K log K) time, where K is the maximum length of a string.
-        # Comparing two sorted strings also takes O(K) time.
-        # So, the anagram check is O(K log K).
-        # Total time complexity: O(N * N * K log K) = O(N^2 * K log K).
+        # We iterate through N strings in the input list.
+        # For each string, we sort it. If K is the maximum length of a string, sorting takes O(K log K).
+        # Inserting into a hash map (or appending to a list within a hash map) takes O(K) on average
+        # (due to string hashing and potential string copy for storage).
+        # Total time complexity: O(N * K log K).
+        # This is generally much better than O(N^2 * K log K) if N is large.
 
         # Space Complexity:
-        # `visited` array takes O(N) space.
-        # Storing `result` could take up to O(N * K) space in the worst case (all strings are unique and stored).
-        # `sorted(s)` creates temporary strings, taking O(K) space.
-        # Total space complexity: O(N + N*K) = O(N*K).
-
-        for i in range(n):
-            if visited[i]:
-                continue # Skip strings already processed
-
-            current_group = [strs[i]]
-            visited[i] = True
-
-            # Compare strs[i] with all subsequent unvisited strings
-            for j in range(i + 1, n):
-                if not visited[j]:
-                    # Check if strs[i] and strs[j] are anagrams by sorting them
-                    if sorted(strs[i]) == sorted(strs[j]):
-                        current_group.append(strs[j])
-                        visited[j] = True
-            result.append(current_group)
-
-        return result
+        # The hash map stores N strings in total.
+        # Each key is a sorted string (max length K), and each value is a list of original strings.
+        # In the worst case, all strings are unique, so the map stores N keys and N strings.
+        # Total space complexity: O(N * K) to store the hash map and its contents.
