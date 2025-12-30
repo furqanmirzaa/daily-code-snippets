@@ -17,31 +17,39 @@ class Solution:
             
         return max_global
 
-# --- Test Cases ---
+# --- Test Cases and Edge Cases ---
 if __name__ == "__main__":
     solver = Solution()
 
-    print("Running basic test cases...")
+    # Each test case is a tuple: (input_nums, expected_output, description)
+    test_cases = [
+        # Basic Functionality Tests
+        ([-2, 1, -3, 4, -1, 2, 1, -5, 4], 6, "Example from problem description"),
+        ([1, 2, 3, 4, 5], 15, "All positive numbers"),
+        ([1, -2, 3, -1, 2], 4, "Mixed positive and negative, max subarray in middle"),
+        
+        # Edge Cases
+        ([5], 5, "Single positive element array"),
+        ([-10], -10, "Single negative element array"),
+        ([-2, -1, -3], -1, "All negative numbers (max is the least negative)"),
+        ([0], 0, "Single zero element array"),
+        ([0, 0, 0], 0, "Array of zeros"),
+        ([1, -1, 1, -1, 1], 1, "Alternating positive/negative, max is a single element"),
+        ([7, -3, 10, -4, 2, 1, -9, 8], 14, "Complex mixed array with peak sum"), # Subarray [7, -3, 10] = 14
+        ([2, -3, 4, -1, -2, 1, 5, -3], 7, "Array with max subarray across multiple segments"), # Subarray [4, -1, -2, 1, 5] = 7
+        ([-5, -1, -2, -3, -4], -1, "Another all negative, max is largest negative"),
+    ]
 
-    # Test Case 1: Example from problem description
-    nums1 = [-2, 1, -3, 4, -1, 2, 1, -5, 4]
-    expected1 = 6 # Subarray [4, -1, 2, 1] has sum 6
-    result1 = solver.maxSubArray(nums1)
-    print(f"Test 1: nums={nums1}, Expected={expected1}, Got={result1}")
-    assert result1 == expected1, f"Test 1 FAILED: Expected {expected1}, Got {result1}"
-
-    # Test Case 2: All positive numbers
-    nums2 = [1, 2, 3, 4, 5]
-    expected2 = 15 # Subarray [1, 2, 3, 4, 5] has sum 15
-    result2 = solver.maxSubArray(nums2)
-    print(f"Test 2: nums={nums2}, Expected={expected2}, Got={result2}")
-    assert result2 == expected2, f"Test 2 FAILED: Expected {expected2}, Got {result2}"
-
-    # Test Case 3: Mixed positive and negative numbers, max subarray in middle
-    nums3 = [1, -2, 3, -1, 2]
-    expected3 = 4 # Subarray [3, -1, 2] has sum 4
-    result3 = solver.maxSubArray(nums3)
-    print(f"Test 3: nums={nums3}, Expected={expected3}, Got={result3}")
-    assert result3 == expected3, f"Test 3 FAILED: Expected {expected3}, Got {result3}"
-
-    print("\nAll basic test cases passed successfully!")
+    print("Running test cases and edge cases...")
+    all_passed = True
+    for i, (nums, expected, description) in enumerate(test_cases):
+        result = solver.maxSubArray(nums)
+        status = "PASSED" if result == expected else "FAILED"
+        print(f"Test {i+1} [{description}]: nums={nums}, Expected={expected}, Got={result} -- {status}")
+        if result != expected:
+            all_passed = False
+    
+    if all_passed:
+        print("\nAll 🚀 test cases and edge cases passed successfully!")
+    else:
+        print("\nSome ❌ test cases failed.")
