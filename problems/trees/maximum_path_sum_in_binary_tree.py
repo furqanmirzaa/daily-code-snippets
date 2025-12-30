@@ -16,10 +16,9 @@ class Solution:
     """
     def minWindow(self, s: str, t: str) -> str:
         """
-        Finds the minimum window substring of `s` that contains all characters of `t`
-        using the optimized sliding window approach.
+        Finds the minimum window substring of `s` that contains all characters of `t`.
 
-        This algorithm employs a two-pointer (left and right) sliding window.
+        This algorithm employs a two-pointer (left and right) sliding window approach.
         It systematically expands the window using the `right` pointer and then,
         when a valid window is found (containing all characters from `t` with required frequencies),
         it attempts to contract the window from the `left` to find the smallest valid one.
@@ -27,7 +26,7 @@ class Solution:
         track character occurrences and validate window contents.
 
         Args:
-            s: The main string to search within.
+            s: The main string in which to search for the window.
             t: The target string defining the characters and their required frequencies
                that must be present in the window.
 
@@ -37,82 +36,88 @@ class Solution:
 
         Time Complexity: O(|s| + |t|)
         - Initializing `target_counts` takes O(|t|) time.
-        - The two pointers `left` and `right` traverse `s` at most once. Each character
+        - Both `left` and `right` pointers traverse `s` at most once. Each character
           in `s` is processed by the `right` pointer once (added to window) and by
           the `left` pointer once (removed from window).
         - Dictionary operations (access, insert, delete) take O(1) on average.
         - Therefore, the overall time complexity is linear with respect to the
           lengths of `s` and `t`.
 
-        Space Complexity: O(k) where `k` is the number of unique characters in `t`.
+        Space Complexity: O(k)
         - `target_counts`: Stores frequency of characters in `t`. At most `k`
-          unique characters (where `k` is bounded by the size of the character set, e.g., 52 for English alphabet or 128 for ASCII).
+          unique characters, where `k` is the size of the character set (e.g., 52 for
+          English alphabet, 128 for ASCII, 256 for extended ASCII).
         - `window_counts`: Stores frequency of characters in the current window.
-          Similar to `target_counts`, `O(k)`.
-        - The space complexity is `O(k)`, which can be considered `O(1)` as `k` is constant with respect to input size `m` and `n`.
+          Similar to `target_counts`, it also takes O(k) space.
+        - As `k` is a constant value independent of the input string lengths,
+          the space complexity can be considered O(1).
         """
+        # Handle edge cases where `t` or `s` are empty.
+        # If t is empty, any window (including empty) satisfies the condition, but problem implies t has chars.
+        # Returning "" for empty t is a common convention or problem specific.
         if not t:
             return ""
         if not s:
             return ""
 
-        # `target_counts` stores the required frequency of each character in `t`.
+        # `target_counts`: Frequency map for characters in `t`.
+        # Example: t = "ABC" -> {'A': 1, 'B': 1, 'C': 1}
         target_counts: Dict[str, int] = collections.Counter(t)
 
-        # `required_chars` is the count of unique characters from `t` that
-        # we still need to match in the current window's frequency.
+        # `required_chars`: The number of unique characters from `t` that we need to
+        # match in terms of their required frequency.
         required_chars: int = len(target_counts)
 
-        # `formed_chars` tracks how many unique characters from `t` are
-        # present in the current window with at least their required frequency.
+        # `formed_chars`: Tracks how many unique characters from `t` have been
+        # found in the current window with at least their `target_counts` frequency.
         formed_chars: int = 0
 
-        # `window_counts` stores the frequency of characters in the current sliding window.
+        # `window_counts`: Frequency map for characters within the current sliding window `s[left...right]`.
         window_counts: DefaultDict[str, int] = collections.defaultdict(int)
 
-        # `left` pointer for the start of the current window.
+        # `left`: The left pointer of the sliding window.
         left: int = 0
-        # `min_len` stores the length of the smallest valid window found so far.
+        # `min_len`: Stores the length of the shortest valid window found so far.
+        # Initialized to infinity.
         min_len: float = float('inf')
-        # `min_window_start` stores the starting index of the smallest valid window.
+        # `min_window_start`: Stores the starting index of the shortest valid window.
         min_window_start: int = 0
 
         # Iterate with the `right` pointer to expand the window.
         for right in range(len(s)):
             char_r: str = s[right]
-            window_counts[char_r] += 1
+            window_counts[char_r] += 1  # Add current character to window_counts
 
-            # If the character added to the window is one of `t`'s characters
-            # and its count in the window now matches the required count in `t`,
-            # increment `formed_chars`.
+            # Check if this character is part of `t` and its count in the window
+            # has just reached the required frequency.
             if char_r in target_counts and window_counts[char_r] == target_counts[char_r]:
                 formed_chars += 1
 
-            # While all required characters are present (i.e., `formed_chars` equals `required_chars`),
-            # try to shrink the window from the `left`.
+            # While the current window is valid (i.e., `formed_chars` matches `required_chars`),
+            # try to shrink it from the `left`.
             while formed_chars == required_chars and left <= right:
                 current_window_len: int = right - left + 1
 
-                # If the current window is smaller than the minimum found so far, update.
+                # If this window is shorter than `min_len`, update `min_len` and `min_window_start`.
                 if current_window_len < min_len:
                     min_len = current_window_len
                     min_window_start = left
 
                 char_l: str = s[left]
-                window_counts[char_l] -= 1
+                window_counts[char_l] -= 1  # Remove character from window_counts
 
                 # If the character removed from the left was a required character
                 # and its count now falls below the target count, decrement `formed_chars`.
                 if char_l in target_counts and window_counts[char_l] < target_counts[char_l]:
                     formed_chars -= 1
 
-                left += 1  # Shrink window by moving `left` pointer
+                left += 1  # Move `left` pointer to shrink the window
 
-        # If `min_len` is still infinity, no valid window was found.
+        # If `min_len` remains infinity, no valid window was found.
         if min_len == float('inf'):
             return ""
         else:
-            # Return the minimum window substring.
+            # Return the substring corresponding to the minimum valid window.
             return s[min_window_start : min_window_start + min_len]
 
 class TestMinWindow(unittest.TestCase):
@@ -165,7 +170,7 @@ class TestMinWindow(unittest.TestCase):
 
     def test_t_has_only_one_char(self):
         self.assertEqual(self.sol.minWindow("banana", "a"), "a")
-        self.assertEqual(self.sol.minWindow("hello", "l"), "ll")
+        self.assertEqual(self.sol.minWindow("hello", "l"), "ll") 
 
     def test_s_and_t_are_same(self):
         self.assertEqual(self.sol.minWindow("hello", "hello"), "hello")
