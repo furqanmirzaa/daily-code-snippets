@@ -94,14 +94,51 @@ class TestMinWindow(unittest.TestCase):
     def test_example_3(self):
         s = "a"
         t = "aa"
-        self.assertEqual(self.sol.minWindow(s, t), "") # s does not contain two 'a's
+        self.assertEqual(self.sol.minWindow(s, t), "")
 
     def test_example_4(self):
         s = "ADOBECODEBANC"
         t = "AABC"
-        self.assertEqual(self.sol.minWindow(s, t), "ADOBECODEBA") # Needs two 'A's
+        self.assertEqual(self.sol.minWindow(s, t), "ADOBECODEBA")
 
     def test_example_5(self):
         s = "ab"
         t = "b"
         self.assertEqual(self.sol.minWindow(s, t), "b")
+
+    # Edge Cases
+    def test_t_is_empty(self):
+        self.assertEqual(self.sol.minWindow("any_string", ""), "")
+
+    def test_s_is_empty(self):
+        self.assertEqual(self.sol.minWindow("", "abc"), "")
+        self.assertEqual(self.sol.minWindow("", ""), "")
+
+    def test_no_valid_window(self):
+        self.assertEqual(self.sol.minWindow("abc", "xyz"), "")
+        self.assertEqual(self.sol.minWindow("ab", "c"), "")
+
+    def test_t_longer_than_s(self):
+        self.assertEqual(self.sol.minWindow("a", "abc"), "")
+
+    def test_s_has_only_one_char(self):
+        self.assertEqual(self.sol.minWindow("x", "x"), "x")
+        self.assertEqual(self.sol.minWindow("x", "y"), "")
+
+    def test_t_has_only_one_char(self):
+        self.assertEqual(self.sol.minWindow("banana", "a"), "a")
+        self.assertEqual(self.sol.minWindow("hello", "l"), "ll") 
+
+    def test_s_and_t_are_same(self):
+        self.assertEqual(self.sol.minWindow("hello", "hello"), "hello")
+
+    def test_all_chars_identical(self):
+        self.assertEqual(self.sol.minWindow("aaaaa", "aa"), "aa")
+        self.assertEqual(self.sol.minWindow("bbbbbb", "bbb"), "bbb")
+
+    def test_window_at_start(self):
+        self.assertEqual(self.sol.minWindow("abracadabra", "abc"), "abr")
+
+    def test_window_at_end(self):
+        self.assertEqual(self.sol.minWindow("hello", "ol"), "llo")
+        self.assertEqual(self.sol.minWindow("xyzabc", "abc"), "abc")
