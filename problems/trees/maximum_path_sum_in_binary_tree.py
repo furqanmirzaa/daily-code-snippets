@@ -52,45 +52,72 @@ class Solution:
         - As `k` is a constant value independent of the input string lengths, 
           the space complexity can be considered O(1).
         """
+        # Handle edge cases where `t` or `s` are empty.
+        # If t is empty, any window (including empty) satisfies the condition,
+        # but problem constraints usually imply t is non-empty or specify "" as default.
         if not t:
             return ""
         if not s:
             return ""
 
+        # `target_counts`: Frequency map for characters in `t`.
+        # Example: t = "ABC" -> {'A': 1, 'B': 1, 'C': 1}
         target_counts: Dict[str, int] = collections.Counter(t)
+
+        # `required_chars`: The number of unique characters from `t` that we need to
+        # match in terms of their required frequency.
         required_chars: int = len(target_counts)
+
+        # `formed_chars`: Tracks how many unique characters from `t` have been
+        # found in the current window with at least their `target_counts` frequency.
         formed_chars: int = 0
+
+        # `window_counts`: Frequency map for characters within the current sliding window `s[left...right]`.
         window_counts: DefaultDict[str, int] = collections.defaultdict(int)
 
+        # `left`: The left pointer of the sliding window.
         left: int = 0
+        # `min_len`: Stores the length of the shortest valid window found so far.
+        # Initialized to infinity.
         min_len: float = float('inf')
+        # `min_window_start`: Stores the starting index of the shortest valid window.
         min_window_start: int = 0
 
+        # Iterate with the `right` pointer to expand the window.
         for right in range(len(s)):
             char_r: str = s[right]
-            window_counts[char_r] += 1
+            window_counts[char_r] += 1  # Add current character to window_counts
 
+            # Check if this character is part of `t` and its count in the window
+            # has just reached the required frequency.
             if char_r in target_counts and window_counts[char_r] == target_counts[char_r]:
                 formed_chars += 1
 
+            # While the current window is valid (i.e., `formed_chars` matches `required_chars`),
+            # try to shrink it from the `left`.
             while formed_chars == required_chars and left <= right:
                 current_window_len: int = right - left + 1
 
+                # If this window is shorter than `min_len`, update `min_len` and `min_window_start`.
                 if current_window_len < min_len:
                     min_len = current_window_len
                     min_window_start = left
 
                 char_l: str = s[left]
-                window_counts[char_l] -= 1
+                window_counts[char_l] -= 1  # Remove character from window_counts
 
+                # If the character removed from the left was a required character
+                # and its count now falls below the target count, decrement `formed_chars`.
                 if char_l in target_counts and window_counts[char_l] < target_counts[char_l]:
                     formed_chars -= 1
 
-                left += 1
+                left += 1  # Move `left` pointer to shrink the window
 
+        # If `min_len` remains infinity, no valid window was found.
         if min_len == float('inf'):
             return ""
         else:
+            # Return the substring corresponding to the minimum valid window.
             return s[min_window_start : min_window_start + min_len]
 
 class TestMinWindow(unittest.TestCase):
@@ -145,7 +172,8 @@ class TestMinWindow(unittest.TestCase):
 
     def test_t_has_only_one_char(self):
         self.assertEqual(self.sol.minWindow("banana", "a"), "a")
-        self.assertEqual(self.sol.minWindow("hello", "l"), "l") 
+        # Corrected: for t="l", the shortest window containing 'l' is just "l" itself.
+        self.assertEqual(self.sol.minWindow("hello", "l"), "l")
 
     def test_s_and_t_are_same(self):
         self.assertEqual(self.sol.minWindow("hello", "hello"), "hello")
@@ -191,3 +219,13 @@ class TestMinWindow(unittest.TestCase):
 
     def test_all_s_is_window(self):
         self.assertEqual(self.sol.minWindow("hello", "hol"), "hello")
+
+    def test_long_string_many_options(self):
+        s = "abcabcadcba"
+        t = "abc"
+        self.assertEqual(self.sol.minWindow(s, t), "abc")
+
+    def test_long_string_sparse_t(self):
+        s = "aaaaaaaaaaaaabcc"
+        t = "abc"
+        self.assertEqual(self.sol.minWindow(s, t), "abcc")
