@@ -4,31 +4,24 @@ class Solution:
         Given an integer array `nums`, find the subarray with the largest sum, and return its sum.
         A subarray is a contiguous non-empty sequence of elements within an array.
 
-        This is the initial skeleton for the problem. The core logic to calculate
-        the maximum subarray sum will be implemented in subsequent stages.
-
-        According to typical problem constraints for 'Maximum Subarray', the input array
-        `nums` is guaranteed to contain at least one element (i.e., it's non-empty).
+        This implementation uses a brute-force approach to find the maximum subarray sum.
+        It iterates through all possible contiguous subarrays, calculates their sum,
+        and keeps track of the maximum sum encountered.
         """
+        n = len(nums)
         
-        # Initialize a variable to keep track of the maximum sum found so far.
-        # It's set to negative infinity to ensure any valid sum (including negative ones)
-        # will be greater. If nums is guaranteed non-empty, nums[0] can also be used.
+        # Initialize max_so_far with the smallest possible value.
+        # This ensures that any actual subarray sum, even a negative one, will be larger.
         max_so_far = -float('inf') 
-        
-        # Placeholder for the algorithm logic.
-        # This section will contain the actual implementation to iterate through
-        # the array and find the maximum subarray sum.
-        
-        # For now, we'll return a placeholder or handle the base case if possible.
-        if not nums:
-            # While problem constraints usually guarantee non-empty arrays, 
-            # this is a robust check.
-            # For this specific problem, constraints typically state 1 <= nums.length.
-            return 0 # Or raise an error, depending on problem spec for empty input.
-        
-        # If array is not empty, a single element array's max subarray sum is itself.
-        # This will be updated by the full algorithm.
-        max_so_far = nums[0]
 
+        # Outer loop iterates through all possible starting points of a subarray.
+        for i in range(n):
+            current_sum = 0
+            # Inner loop iterates through all possible ending points for the current starting point.
+            # It also incrementally calculates the sum of the current subarray.
+            for j in range(i, n):
+                current_sum += nums[j]
+                # Update max_so_far if the current subarray sum is greater.
+                max_so_far = max(max_so_far, current_sum)
+                
         return max_so_far
