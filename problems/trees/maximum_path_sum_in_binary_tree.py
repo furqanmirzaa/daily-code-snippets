@@ -44,55 +44,41 @@ class Solution:
 if __name__ == "__main__":
     sol = Solution()
 
-    print("--- Running Basic Tests ---")
-
-    # Test Case 1: Basic example
-    nums1 = [100, 4, 200, 1, 3, 2]
-    expected1 = 4 # Sequence: 1, 2, 3, 4
-    result1 = sol.longestConsecutive(nums1)
-    print(f"Input: {nums1}, Expected: {expected1}, Got: {result1}")
-    assert result1 == expected1, f"Test Case 1 Failed: Expected {expected1}, Got {result1}"
-
-    # Test Case 2: Empty array
-    nums2 = []
-    expected2 = 0
-    result2 = sol.longestConsecutive(nums2)
-    print(f"Input: {nums2}, Expected: {expected2}, Got: {result2}")
-    assert result2 == expected2, f"Test Case 2 Failed: Expected {expected2}, Got {result2}"
-
-    # Test Case 3: Single element
-    nums3 = [1]
-    expected3 = 1
-    result3 = sol.longestConsecutive(nums3)
-    print(f"Input: {nums3}, Expected: {expected3}, Got: {result3}")
-    assert result3 == expected3, f"Test Case 3 Failed: Expected {expected3}, Got {result3}"
-
-    # Test Case 4: Already sorted array
-    nums4 = [1, 2, 3, 4, 5]
-    expected4 = 5
-    result4 = sol.longestConsecutive(nums4)
-    print(f"Input: {nums4}, Expected: {expected4}, Got: {result4}")
-    assert result4 == expected4, f"Test Case 4 Failed: Expected {expected4}, Got {result4}"
-
-    # Test Case 5: Reverse sorted array
-    nums5 = [5, 4, 3, 2, 1]
-    expected5 = 5
-    result5 = sol.longestConsecutive(nums5)
-    print(f"Input: {nums5}, Expected: {expected5}, Got: {result5}")
-    assert result5 == expected5, f"Test Case 5 Failed: Expected {expected5}, Got {result5}"
+    test_cases = [
+        ([100, 4, 200, 1, 3, 2], 4, "Basic example: 1,2,3,4"),
+        ([], 0, "Empty array"),
+        ([1], 1, "Single element array"),
+        ([1, 2, 3, 4, 5], 5, "Already sorted array"),
+        ([5, 4, 3, 2, 1], 5, "Reverse sorted array"),
+        ([1, 2, 10, 11, 12, 13], 4, "Disjoint sequences, longest is 10,11,12,13"),
+        ([1, 2, 0, 1, 3], 4, "Duplicates and order doesn't matter, longest is 0,1,2,3"),
+        ([-1, 0, 1], 3, "Negative numbers sequence"),
+        ([0, 3, 7, 2, 5, 8, 4, 6, 0, 1], 9, "Complex mix, one long sequence 0-8"),
+        ([5, 9, 2, 11, 13, 10], 3, "Mixed sequences, longest is 9,10,11"),
+        ([1, 2, 2, 3, 4], 4, "Duplicates at start/middle of sequence: 1,2,3,4"),
+        ([10, 1, 9, 2, 8, 3, 7, 4, 6, 5], 10, "Numbers shuffled, full sequence 1-10"),
+        ([7, -9, 3, -6, 3, 5, 3, 6, -8, -4, -3, -2, 1, -7, -1, -9, 5, 5, -3, -1, -2, 0, 4], 6, "Complex mix with negative numbers, longest sequence -4 to 1"),
+    ]
     
-    # Test Case 6: Disjoint sequences
-    nums6 = [1, 2, 10, 11, 12, 13]
-    expected6 = 4 # Sequence: 10, 11, 12, 13
-    result6 = sol.longestConsecutive(nums6)
-    print(f"Input: {nums6}, Expected: {expected6}, Got: {result6}")
-    assert result6 == expected6, f"Test Case 6 Failed: Expected {expected6}, Got {result6}"
+    total_tests = len(test_cases)
+    passed_tests = 0
 
-    # Test Case 7: Duplicates - should not affect length
-    nums7 = [1, 2, 0, 1, 3]
-    expected7 = 4 # Sequence: 0, 1, 2, 3
-    result7 = sol.longestConsecutive(nums7)
-    print(f"Input: {nums7}, Expected: {expected7}, Got: {result7}")
-    assert result7 == expected7, f"Test Case 7 Failed: Expected {expected7}, Got {result7}"
+    print("--- Running Tests for Longest Consecutive Sequence ---")
+    for i, (nums, expected, description) in enumerate(test_cases):
+        result = sol.longestConsecutive(nums)
+        print(f"\nTest Case {i+1}: {description}")
+        print(f"  Input: {nums}")
+        print(f"  Expected: {expected}, Got: {result}")
+        try:
+            assert result == expected
+            print("  Status: PASSED")
+            passed_tests += 1
+        except AssertionError:
+            print(f"  Status: FAILED - Expected {expected}, Got {result}")
+        print("-" * 40)
 
-    print("\nAll basic test cases passed!")
+    print(f"\nSummary: {passed_tests}/{total_tests} test cases passed.")
+    if passed_tests == total_tests:
+        print("All test cases passed successfully!")
+    else:
+        print("Some test cases failed. Please review the implementation.")
