@@ -13,53 +13,78 @@ class Solution:
     def minWindow(self, s: str, t: str) -> str:
         """
         Finds the minimum window substring of s that contains all characters of t
-        using a brute-force approach.
+        using the optimized sliding window approach.
 
         Complexity Analysis:
         Let |s| be the length of string s (m) and |t| be the length of string t (n).
 
         Time Complexity:
-        - The outer loop iterates from `i = 0` to `m-1`.
-        - The inner loop iterates from `j = i` to `m-1`. This results in `O(m^2)` possible substrings.
-        - Inside the inner loop:
-            - Slicing `s[i : j + 1]` takes `O(m)` time in the worst case.
-            - `collections.Counter(current_substring)` takes `O(m)` time to build the frequency map for the current substring.
-            - `contains_all_chars` iterates over `target_counts`, which has at most `k` unique characters (where `k` is at most 52 for English alphabet or 128 for ASCII). This takes `O(k)` time.
-        - Therefore, the total time complexity is approximately `O(m^2 * (m + k))` which simplifies to `O(m^3)` in the worst case if we consider `k` as a constant, or more precisely `O(m^2 * m + m^2 * k)`.
-          This approach is too slow for typical constraints (e.g., m up to 10^5).
+        - Initializing `target_counts` takes `O(n)` time.
+        - The two pointers `left` and `right` traverse `s`. The `right` pointer
+          moves from `0` to `m-1`, visiting each character once. The `left` pointer
+          also moves from `0` to `m-1`, visiting each character at most once.
+        - Inside the loop, dictionary operations (get, set, increment, decrement)
+          take `O(1)` on average.
+        - Thus, the overall time complexity is `O(m + n)`.
 
         Space Complexity:
-        - `target_counts`: `O(k)` where `k` is the number of unique characters in `t`.
-        - `current_window_counts`: `O(k)` for each substring.
-        - The space required for the substring `current_substring` is `O(m)`.
-        - Overall, the space complexity is `O(m + k)`.
+        - `target_counts`: Stores frequency of characters in `t`. At most `k`
+          unique characters (where `k` is bounded by the size of the character set, e.g., 52 for English alphabet or 128 for ASCII). So `O(k)`.
+        - `window_counts`: Stores frequency of characters in the current window.
+          Similar to `target_counts`, `O(k)`.
+        - The space complexity is `O(k)`, which can be considered `O(1)` as `k` is constant with respect to input size `m` and `n`.
 
-        This brute-force approach is highly inefficient for large inputs.
+        This optimized approach is efficient for large inputs.
         """
         if not t:
             return ""
         if not s:
             return ""
 
+        # Dictionary to store the frequency of characters in t
         target_counts = collections.Counter(t)
+
+        # Number of unique characters in t that must be present in the window
+        # with at least their required frequency.
+        required_chars = len(target_counts)
+
+        # Current number of unique characters in window that meet the requirement
+        formed_chars = 0
+
+        # Dictionary to store the frequency of characters in the current window
+        window_counts = collections.defaultdict(int)
+
+        # Pointers for the sliding window
+        left = 0
         min_len = float('inf')
         min_window_start = 0
 
-        def contains_all_chars(window_str_counts, target_str_counts):
-            for char, count in target_str_counts.items():
-                if window_str_counts[char] < count:
-                    return False
-            return True
+        for right in range(len(s)):
+            char_r = s[right]
+            window_counts[char_r] += 1
 
-        for i in range(len(s)):
-            for j in range(i, len(s)):
-                current_substring = s[i : j + 1]
-                current_window_counts = collections.Counter(current_substring)
+            # If the character from s[right] is in t and its count in the window
+            # matches its required count in t, increment formed_chars.
+            if char_r in target_counts and window_counts[char_r] == target_counts[char_r]:
+                formed_chars += 1
 
-                if contains_all_chars(current_window_counts, target_counts):
-                    if len(current_substring) < min_len:
-                        min_len = len(current_substring)
-                        min_window_start = i
+            # Try to shrink the window from the left if all required characters are found
+            while formed_chars == required_chars and left <= right:
+                # Update minimum window if current window is smaller
+                current_window_len = right - left + 1
+                if current_window_len < min_len:
+                    min_len = current_window_len
+                    min_window_start = left
+
+                char_l = s[left]
+                window_counts[char_l] -= 1
+
+                # If the character removed from the left was a required character
+                # and its count now falls below the target count, decrement formed_chars.
+                if char_l in target_counts and window_counts[char_l] < target_counts[char_l]:
+                    formed_chars -= 1
+
+                left += 1
 
         if min_len == float('inf'):
             return ""
