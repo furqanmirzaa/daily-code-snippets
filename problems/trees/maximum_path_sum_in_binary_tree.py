@@ -1,41 +1,60 @@
 class Solution:
+    """
+    Solution for the Longest Consecutive Sequence problem.
+
+    This problem asks to find the length of the longest sequence of consecutive integers
+    within an unsorted array of integers. The algorithm must run in O(n) time complexity.
+    """
+
     def longestConsecutive(self, nums: list[int]) -> int:
         """
-        Given an unsorted array of integers nums, return the length of the longest consecutive elements sequence.
-        This algorithm runs in O(N) time, fulfilling the problem requirements.
+        Calculates the length of the longest consecutive elements sequence in an unsorted array.
 
-        Optimized approach using a HashSet:
-        1. Store all unique numbers from `nums` into a hash set (`num_set`).
-           This step takes O(N) time and O(N) space.
-        2. Initialize `longest_streak = 0`.
-        3. Iterate through each `num` in the original `nums` array:
-           a. Check if `num - 1` is NOT in `num_set`. If it's not, then `num` is a potential start of a new consecutive sequence.
-              (This is the key optimization: we only start counting a sequence from its absolute beginning).
-           b. If `num` is a potential start, initialize `current_num = num` and `current_streak = 1`.
-           c. While `current_num + 1` IS in `num_set`, increment `current_num` and `current_streak`.
-              This extends the current consecutive sequence.
-           d. After the inner `while` loop finishes (meaning the sequence has ended), update `longest_streak`:
-              `longest_streak = max(longest_streak, current_streak)`.
-        Overall Time Complexity: O(N).
-          Each number is added to the set once (O(N)). Then, for each number, it's checked if it's a sequence start. The inner while loop runs for each number only if it's part of a sequence that started with `num` (and its predecessor wasn't in the set). Crucially, each number is visited at most a constant number of times (set insertion, `(num-1) in num_set` check, and being incremented in the `while` loop). Thus, the total operations remain proportional to N.
-        Overall Space Complexity: O(N) to store the numbers in the hash set.
+        The approach leverages a hash set to achieve O(N) time complexity.
+        It works by identifying potential start points of consecutive sequences and then
+        extending these sequences.
+
+        Args:
+            nums: A list of unsorted integers.
+
+        Returns:
+            An integer representing the length of the longest consecutive elements sequence.
+
+        Time Complexity:
+            O(N) - Building the hash set takes O(N) time. Iterating through `nums` takes O(N) time.
+            The inner `while` loop, which extends the current streak, runs for each number at most once
+            across all sequences (because once a number is part of a sequence, it won't be considered
+            as a 'start' again, and its successors are only checked once as part of its sequence).
+            Therefore, overall, each number is visited a constant number of times (set insertion,
+            checking for predecessor, and being extended).
+
+        Space Complexity:
+            O(N) - A hash set (`num_set`) is used to store all unique numbers from the input array.
+            In the worst case, all numbers are unique, requiring O(N) space.
         """
         if not nums:
             return 0
 
-        num_set = set(nums)  # O(N) time, O(N) space to build the set of unique numbers
+        # Store all numbers in a set for O(1) average time lookups.
+        num_set = set(nums)
 
         longest_streak = 0
 
+        # Iterate through the original `nums` array to find potential start points of sequences.
         for num in nums:
+            # A number `num` is considered the start of a consecutive sequence if `num - 1`
+            # is not present in the `num_set`. This optimization prevents redundant checks
+            # for numbers that are part of an already-started sequence.
             if (num - 1) not in num_set:
                 current_num = num
                 current_streak = 1
 
+                # Extend the sequence as long as consecutive numbers are found in the set.
                 while (current_num + 1) in num_set:
                     current_num += 1
                     current_streak += 1
                 
+                # Update the overall longest streak found so far.
                 longest_streak = max(longest_streak, current_streak)
         
         return longest_streak
@@ -58,12 +77,17 @@ if __name__ == "__main__":
         ([1, 2, 2, 3, 4], 4, "Duplicates at start/middle of sequence: 1,2,3,4"),
         ([10, 1, 9, 2, 8, 3, 7, 4, 6, 5], 10, "Numbers shuffled, full sequence 1-10"),
         ([7, -9, 3, -6, 3, 5, 3, 6, -8, -4, -3, -2, 1, -7, -1, -9, 5, 5, -3, -1, -2, 0, 4], 6, "Complex mix with negative numbers, longest sequence -4 to 1"),
+        ([1, 1, 1, 1], 1, "All duplicates, single number sequence"),
+        ([1, 3, 5, 7, 9], 1, "No consecutive numbers at all, longest is 1"),
     ]
     
     total_tests = len(test_cases)
     passed_tests = 0
 
+    print("\n" + "=" * 50)
     print("--- Running Tests for Longest Consecutive Sequence ---")
+    print("=" * 50)
+
     for i, (nums, expected, description) in enumerate(test_cases):
         result = sol.longestConsecutive(nums)
         print(f"\nTest Case {i+1}: {description}")
@@ -75,10 +99,11 @@ if __name__ == "__main__":
             passed_tests += 1
         except AssertionError:
             print(f"  Status: FAILED - Expected {expected}, Got {result}")
-        print("-" * 40)
+        print("-" * 50)
 
     print(f"\nSummary: {passed_tests}/{total_tests} test cases passed.")
     if passed_tests == total_tests:
         print("All test cases passed successfully!")
     else:
         print("Some test cases failed. Please review the implementation.")
+    print("=" * 50)
