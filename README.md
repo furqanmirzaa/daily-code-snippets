@@ -5,14 +5,14 @@
 - **Last Updated**: 2025-12-30
 
 ## 🎯 Latest Problem
-- **Maximum Path Sum in Binary Tree** (Medium)
-- Category: trees
-- Commits: 5
+- **Maximum Subarray Sum of Size K** (Medium)
+- Category: arrays
+- Commits: 9
 - Date: 2025-12-30
 
 ## 📚 All Problems
 
-- **Maximum Path Sum in Binary Tree** (Medium) - trees - 2025-12-30
+- **Maximum Subarray Sum of Size K** (Medium) - arrays - 2025-12-30
 
 ---
 *Automated daily with n8n + Gemini AI*
