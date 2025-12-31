@@ -2,17 +2,17 @@
 
 ## 📊 Stats
 - **Total Problems Solved**: 1
-- **Last Updated**: 2025-12-30
+- **Last Updated**: 2025-12-31
 
 ## 🎯 Latest Problem
-- **Maximum Subarray Sum of Size K** (Medium)
+- **K Smallest Sum Pairs** (Medium)
 - Category: arrays
 - Commits: 9
-- Date: 2025-12-30
+- Date: 2025-12-31
 
 ## 📚 All Problems
 
-- **Maximum Subarray Sum of Size K** (Medium) - arrays - 2025-12-30
+- **K Smallest Sum Pairs** (Medium) - arrays - 2025-12-31
 
 ---
 *Automated daily with n8n + Gemini AI*
