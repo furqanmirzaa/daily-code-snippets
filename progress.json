@@ -2,13 +2,13 @@
   "total_solved": 1,
   "problems_solved": [
     {
-      "date": "2025-12-30",
-      "title": "Maximum Path Sum in Binary Tree",
-      "category": "trees",
+      "date": "2025-12-31",
+      "title": "K Smallest Sum Pairs",
+      "category": "arrays",
       "difficulty": "Medium",
-      "commits": 6,
-      "file": "problems/trees/maximum_path_sum_in_binary_tree.py"
+      "commits": 9,
+      "file": "problems/arrays/k_smallest_sum_pairs.py"
     }
   ],
-  "last_updated": "2025-12-30"
+  "last_updated": "2025-12-31"
 }
