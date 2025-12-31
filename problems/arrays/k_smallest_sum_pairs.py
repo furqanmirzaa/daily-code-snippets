@@ -2,52 +2,62 @@ class Solution:
     def getMaximumGold(self, grid: list[list[int]]) -> int:
         rows = len(grid)
         cols = len(grid[0])
-        max_gold_collected = 0 # Stores the overall maximum gold found.
+        max_gold_collected = 0
 
-        # Define possible directions for movement: (delta_row, delta_col)
-        # (0, 1) -> Right, (0, -1) -> Left, (1, 0) -> Down, (-1, 0) -> Up
         directions = [(0, 1), (0, -1), (1, 0), (-1, 0)]
         
         def dfs(r: int, c: int, current_path_gold: int):
-            # 'nonlocal' is used here to modify the 'max_gold_collected' variable
-            # which is defined in the enclosing scope of 'getMaximumGold'.
             nonlocal max_gold_collected 
 
-            # Update the global maximum with the gold collected in the current path.
-            # A path can terminate at any point if there are no more valid moves.
             max_gold_collected = max(max_gold_collected, current_path_gold)
             
-            # Store the current cell's gold value. This is necessary for backtracking.
             gold_at_current_cell = grid[r][c]
-            
-            # Mark the current cell as visited by temporarily setting its gold to 0.
-            # This ensures that this cell is not revisited within the current DFS path.
             grid[r][c] = 0 
             
-            # Explore all four adjacent directions (Up, Down, Left, Right).
             for dr, dc in directions:
-                nr, nc = r + dr, c + dc # Calculate neighbor's coordinates.
+                nr, nc = r + dr, c + dc 
                 
-                # Check if the neighbor cell is valid:
-                # 1. It must be within the grid boundaries.
-                # 2. It must contain gold (grid[nr][nc] > 0). This also implies
-                #    it has not been visited in the current path.
                 if 0 <= nr < rows and 0 <= nc < cols and grid[nr][nc] > 0:
-                    # Recursively call DFS for the neighbor, adding its gold to the path total.
                     dfs(nr, nc, current_path_gold + grid[nr][nc])
             
-            # Backtrack: Restore the gold value of the current cell.
-            # This is essential so that this cell can be part of other paths
-            # initiated from different starting points in the outer loop.
             grid[r][c] = gold_at_current_cell
             
-        # Iterate through each cell in the grid to find all possible starting points.
-        # The miner can start from any cell that has gold (grid[r][c] > 0).
         for r in range(rows):
             for c in range(cols):
-                if grid[r][c] > 0: # Check if the cell contains gold.
-                    # Initiate a DFS path from this cell.
-                    # The initial 'current_path_gold' is just the gold in the starting cell.
+                if grid[r][c] > 0:
                     dfs(r, c, grid[r][c])
                     
         return max_gold_collected
+
+"""
+Complexity Analysis:
+
+Let R be the number of rows and C be the number of columns in the grid.
+Total number of cells N = R * C.
+
+Time Complexity:
+O(R * C * 3^(R*C)).
+- The outer loops iterate R * C times, initiating a DFS from each cell.
+- Each DFS explores paths in the grid. Since cells cannot be revisited
+  in a single path, the maximum path length is R * C.
+- At each step of the DFS, after visiting a cell, there are at most 3
+  new valid directions to explore (excluding the direction from which
+  the current cell was entered, and any previously visited cells in
+  the current path).
+- This leads to an exponential number of paths in the worst-case scenario.
+- Given the constraints (R, C <= 15, so R*C <= 225), an exponential
+  complexity like 3^(R*C) might seem too high. However, the grid structure
+  and the effective pruning due to 0-gold cells (acting as barriers or
+  already visited cells) make the practical average case performance
+  much better, allowing this solution to pass within typical time limits.
+
+Space Complexity:
+O(R * C).
+- This is primarily due to the recursion stack depth used by the DFS.
+- In the worst case, a path could visit all R * C cells, leading to a
+  recursion depth of R * C.
+- The `directions` list uses constant space.
+- The `grid` is modified in-place for visited tracking, so it does not
+  add extra space beyond the input (excluding Python's internal list
+  copying for arguments, which is not usually counted for "auxiliary space").
+"""
