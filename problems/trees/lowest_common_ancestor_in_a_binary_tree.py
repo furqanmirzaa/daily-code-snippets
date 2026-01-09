@@ -1,18 +1,30 @@
 class Solution:
     def findMin(self, nums: list[int]) -> int:
         """
-        Problem: Find Minimum in Rotated Sorted Array
-        Category: Arrays, Binary Search
-        Difficulty: Medium
-        Description: Suppose an array of length n sorted in ascending order is rotated between 1 and n times.
-        For example, the array nums = [0,1,2,4,5,6,7] might become [4,5,6,7,0,1,2] if it was rotated 4 times.
-        Notice that rotating an array [a[0], a[1], a[2], ..., a[n-1]] 1 time results in the array [a[n-1], a[0], a[1], ..., a[n-2]].
-        Given the sorted rotated array nums of unique elements, return the minimum element of this array.
-        You must write an algorithm that runs in O(log n) time.
+        Finds the minimum element in a rotated sorted array.
 
-        Time Complexity: O(log n) - Each step of binary search reduces the search space by half.
-        Space Complexity: O(1) - We only use a few extra variables for pointers.
+        The array `nums` is originally sorted in ascending order, but it might have been
+        rotated between 1 and `n` times. All elements in `nums` are unique.
+        The algorithm must run in O(log n) time.
+
+        Args:
+            nums: A list of unique integers representing a rotated sorted array.
+
+        Returns:
+            The minimum element in the array.
+
+        Raises:
+            ValueError: If the input array `nums` is empty.
+
+        Example:
+            >>> Solution().findMin([3,4,5,1,2])
+            1
+            >>> Solution().findMin([4,5,6,7,0,1,2])
+            0
+            >>> Solution().findMin([11,13,15,17])
+            11
         """
+        # Handle edge case for an empty array
         if not nums:
             raise ValueError("Input array cannot be empty.")
             
@@ -20,34 +32,45 @@ class Solution:
         
         # Optimization: If the array is not rotated at all (or rotated n times),
         # the first element is the minimum. This is identifiable if nums[left] <= nums[right].
-        # This also covers the case of an array with a single element efficiently.
+        # This also efficiently handles arrays with a single element (e.g., [5]).
         if nums[left] <= nums[right]:
             return nums[left]
             
-        while left < right: # Loop until left and right pointers meet
-            mid = left + (right - left) // 2
+        # Perform binary search to find the minimum element
+        # The loop continues as long as the search space has more than one element (left < right).
+        while left < right:
+            mid = left + (right - left) // 2 # Calculate mid-point to prevent potential integer overflow
+                                             # and ensure it leans towards the left in even-length segments.
             
-            # If nums[mid] > nums[right], it means the pivot (minimum) is in the right part (mid+1 to right).
+            # The core logic: Compare nums[mid] with nums[right].
+            # This comparison helps to identify which half is sorted and which half
+            # contains the pivot (minimum element).
+
+            # If nums[mid] > nums[right]:
+            # This implies that the minimum element must be in the right half of the array
+            # (from mid + 1 to right). The left half (left to mid) is sorted in increasing order,
+            # but the overall segment (left to right) is rotated. Thus, the minimum must be after mid.
             # Example: [4,5,6,7,0,1,2]
-            #   L=0, R=6, Mid=3 (val 7). nums[3] (7) > nums[6] (2). So min is in [0,1,2].
-            #   New L=4.
-            # Example: [3,4,5,1,2]
-            #   L=0, R=4, Mid=2 (val 5). nums[2] (5) > nums[4] (2). So min is in [1,2].
-            #   New L=3.
+            #   L=0, R=6, Mid=3 (val 7). Here, nums[3] (7) > nums[6] (2).
+            #   The sorted segment is `[4,5,6,7]`. The minimum `0` is in `[0,1,2]` which is to the right.
+            #   So, we discard the left half including mid and set `left = mid + 1`.
             if nums[mid] > nums[right]:
                 left = mid + 1
-            # If nums[mid] <= nums[right], it means the pivot (minimum) is in the left part (left to mid).
-            # It could be nums[mid] itself, or something to its left.
+            # If nums[mid] <= nums[right]:
+            # This implies that the minimum element is in the left half of the array (from left to mid),
+            # or it is `nums[mid]` itself. We cannot discard `mid` as it might be the minimum.
             # Example: [7,0,1,2,4,5,6]
-            #   L=0, R=6, Mid=3 (val 2). nums[3] (2) <= nums[6] (6). So min is in [7,0,1,2].
-            #   New R=3.
-            # Example: [1,2,3,4,5] (not rotated)
-            #   L=0, R=4, Mid=2 (val 3). nums[2] (3) <= nums[4] (5). So min is in [1,2,3].
-            #   New R=2.
+            #   L=0, R=6, Mid=3 (val 2). Here, nums[3] (2) <= nums[6] (6).
+            #   The minimum `0` is in `[7,0,1,2]` which is to the left (or at mid).
+            #   So, we narrow the search to the left half including mid and set `right = mid`.
+            # Example: [1,2,3,4,5] (not rotated, but this case is also handled by initial check)
+            #   L=0, R=4, Mid=2 (val 3). Here, nums[2] (3) <= nums[4] (5).
+            #   Minimum `1` is in `[1,2,3]`. New R=2.
             else: # nums[mid] <= nums[right]
                 right = mid
                 
-        # When left == right, we have found the minimum element.
+        # The loop terminates when left == right. At this point, `left` (or `right`)
+        # points to the minimum element in the array.
         return nums[left]
 
 # Test Cases
@@ -78,3 +101,5 @@ if __name__ == "__main__":
         solver.findMin([])
     except ValueError as e:
         print(f"Test Case 10: Empty array -> Expected: ValueError, Got: {e}")
+    else:
+        print("Test Case 10 failed: Expected ValueError for empty array, but no error raised.")
