@@ -2,13 +2,13 @@
   "total_solved": 1,
   "problems_solved": [
     {
-      "date": "2025-12-31",
-      "title": "K Smallest Sum Pairs",
-      "category": "arrays",
+      "date": "2026-01-09",
+      "title": "Lowest Common Ancestor in a Binary Tree",
+      "category": "trees",
       "difficulty": "Medium",
-      "commits": 9,
-      "file": "problems/arrays/k_smallest_sum_pairs.py"
+      "commits": 8,
+      "file": "problems/trees/lowest_common_ancestor_in_a_binary_tree.py"
     }
   ],
-  "last_updated": "2025-12-31"
+  "last_updated": "2026-01-09"
 }
