@@ -13,6 +13,9 @@ class Solution:
         # Brute force approach: Iterate through the array to find the minimum.
         # This approach does not meet the O(log n) requirement.
         
+        # Time Complexity: O(n) - In the worst case, we iterate through all n elements of the array.
+        # Space Complexity: O(1) - We only use a few extra variables for storage.
+        
         if not nums:
             raise ValueError("Input array cannot be empty.")
             
