@@ -10,5 +10,14 @@ class Solution:
         Given the sorted rotated array nums of unique elements, return the minimum element of this array.
         You must write an algorithm that runs in O(log n) time.
         """
-        # Placeholder for the solution
-        return 0
+        # Brute force approach: Iterate through the array to find the minimum.
+        # This approach does not meet the O(log n) requirement.
+        
+        if not nums:
+            raise ValueError("Input array cannot be empty.")
+            
+        min_element = nums[0]
+        for i in range(1, len(nums)):
+            if nums[i] < min_element:
+                min_element = nums[i]
+        return min_element
