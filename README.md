@@ -2,17 +2,17 @@
 
 ## 📊 Stats
 - **Total Problems Solved**: 1
-- **Last Updated**: 2025-12-31
+- **Last Updated**: 2026-01-09
 
 ## 🎯 Latest Problem
-- **K Smallest Sum Pairs** (Medium)
-- Category: arrays
-- Commits: 9
-- Date: 2025-12-31
+- **Lowest Common Ancestor in a Binary Tree** (Medium)
+- Category: trees
+- Commits: 8
+- Date: 2026-01-09
 
 ## 📚 All Problems
 
-- **K Smallest Sum Pairs** (Medium) - arrays - 2025-12-31
+- **Lowest Common Ancestor in a Binary Tree** (Medium) - trees - 2026-01-09
 
 ---
 *Automated daily with n8n + Gemini AI*
